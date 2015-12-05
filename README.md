@@ -4,4 +4,5 @@
 # 利用ライブラリ
 - Hiroaki Matoba氏 piexifjs https://github.com/hMatoba/piexifjs
   - MIT License https://github.com/hMatoba/piexifjs/blob/master/LICENSE.txt
-
+- Twitter Inc. Bootstrap3
+  - MIT License https://github.com/twbs/bootstrap/blob/master/LICENSE
