@@ -17,8 +17,19 @@ gulp.task('browserify', function(){
     });
 });
 
+gulp.task('plugins', function() {
+    gulp.src('./node_modules/bootstrap/dist/css/bootstrap*.min.css')
+        .pipe(gulp.dest('dist/css'));
+    gulp.src('./node_modules/bootstrap/dist/js/bootstrap.min.js')
+        .pipe(gulp.dest('dist/plugins'));
+    gulp.src('./node_modules/bootstrap/dist/fonts/*')
+        .pipe(gulp.dest('dist/fonts'));
+    gulp.src('./node_modules/jquery/dist/jquery.min.js')
+        .pipe(gulp.dest('dist/plugins'));
+});
+
 // 監視タスクを作成
-gulp.task('watch', function() {
+gulp.task('watch', ['plugins'], function() {
     browserSync({
         notify: false,
         logPrefix: 'BS',
