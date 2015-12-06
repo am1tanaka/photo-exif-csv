@@ -1,0 +1,286 @@
+ReactのプロジェクトにBrowserify&BabelとGulpを導入してライブリロード
+
+Browserifyは、JavaScriptで外部ファイルを簡単に読み込んでモジュール化する手段を提供してくれます。node.jsで動作させる時はrequireで同様のことができますが、その機能をブラウザー上で使えるようにしてくれます。
+
+Babelは、次世代のJavaScriptの仕様を、現在のブラウザ上で動作させるためのJavaScriptコンパイラです。Reactのコンパイル機能も持っているので、それを目的に組み込みます。もちろん、本来の目的であるES6などの表記も可能になります。
+
+Gulpはプロジェクトのビルドやテスト、デプロイを自動化してくれるツールです。
+
+
+* 参考URL
+- [https://facebook.github.io/react/docs/getting-started.html:title]
+  - React公式ページ
+- [http://qiita.com/hkusu/items/e068bba0ae036b447754:title]
+  — React.js + Babel + Browserify + gulp の環境構築方法です
+- [http://whiskers.nukos.kitchen/2014/12/03/gulp-watch.html:title]
+-- ファイルの修正を監視して、自動的にタスクを実行する方法が書かれています
+- [http://qiita.com/oreo3@github/items/8b3bff9aed7b10ebe757:title]
+-- リビルド後にブラウザーでライブリロードする方法が書かれています
+- [http://browserify.org/:title]
+- [https://github.com/substack/browserify-handbook:title]
+- [http://www.browsersync.io/docs/gulp/:title]
+- [https://www.npmjs.com/package/babelify:title]
+
+
+* 必要なパッケージのインストール
+事前に、npmのアップデートをしておきましょう。
+>||
+npm update -g npm
+||<
+
+プロジェクトフォルダーを作成して、以下を実行して必要なパッケージを組み込みます。
+
+** package.jsonの生成
+パッケージを管理できるように、package.jsonを作成しておきましょう。プロジェクトフォルダー内で以下を実行します。
+>||
+npm init
+||<
+
+必要に応じで項目を入力して、package.jsonを生成してください。
+
+** 必要なパッケージをインストール
+Browserifyがインストールされていなければ、以下でインストールします。グローバルにインストールしましょう。
+>||
+npm install -g browserify
+||<
+
+次に、reactやreact-dom、babelをインストールしましょう。
+>||
+npm install --save-dev react react-dom babelify babel-preset-react
+||<
+
+* サンプルの作成
+- ソースファイルを入れるsrcフォルダーを作成します
+- BrowserifyとJSXCompilerを通したJavaScriptファイルを入れておくdistフォルダーを作成します
+- distフォルダーにindex.htmlを作成して、以下の通り入力する
+>|html|
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>browserify-gulpテスト</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id="example"></div>
+
+    <script src="./app.js"></script>
+</body>
+</html>
+||<
+- src/app.jsx
+>|javascript|
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var Foo = React.createClass({
+    render: function() {
+        return (
+            <div className='label label-primary'>
+                Browserify+Babel & Gulpサンプル
+            </div>
+        );
+    }
+});
+
+ReactDOM.render(
+    <Foo />,
+    document.getElementById('example')
+);
+||<
+
+* 動作確認
+手動でbrowserifyのコマンドをターミナルから実行して、ここまでの環境が正しく動作するかを確認してみましょう。ターミナルから以下を実行します。
+
+>||
+browserify -t [ babelify --presets [ react ] ] src/app.jsx -o dist/app.js
+||<
+
+問題がなければビルドが成功します。Finderなどでプロジェクトフォルダー>distフォルダー内のindex.htmlを参照して、ブWebラウザーで表示してみましょう。「Browserify+Babel & Gulpサンプル」という文字列が青地で装飾されて表示されれば成功です。
+
+
+* Gulpの利用
+ここまで、ターミナルから手打ちでコマンドを入力しましたが、毎回それをやるのは面倒です。そこでビルドツールのGulpを利用します。
+
+** Gulpのインストール
+インストールしていない場合は、以下でインストールしてください。
+>||
+npm install -g gulp
+||<
+
+また、gulpでビルドを実行するにはプロジェクトフォルダーに利用するモジュールが全てインストールされている必要があるので、以下を改めて実行してインストールします。
+>||
+npm install --save-dev gulp browser-sync browserify vinyl-source-stream
+||<
+- browser-sync は、ライブリロードを行うためのプラグインです
+- vinyl-source-stream は、BrowserifyをGulpで利用する際に必要なものです
+
+
+** Gulp用の設定ファイルを作成
+プロジェクトフォルダーのルートにgulpfile.jsを作成して、[http://qiita.com/masato/items/35b0900e3a7282b33bf8:title]と[http://qiita.com/hkusu/items/e068bba0ae036b447754:title]を参考に作成した以下のコードを書きます。
+>||
+var gulp = require('gulp');
+var browserify = require('browserify');
+var babelify = require('babelify');
+var source = require('vinyl-source-stream');
+
+gulp.task('browserify', function(){
+    return browserify('./src/app.jsx', { debug: true})
+        .transform(babelify, {presets:["react"]})
+        .bundle()
+        .on("error", function (err) { console.log("Error : " + err.message); })
+        .pipe(source('app.js'))
+        .pipe(gulp.dest('./dist')
+    );
+});
+
+gulp.task('default', ['browserify']);
+||<
+以上で、srcフォルダー内のapp.jsxを、distフォルダーのapp.jsにビルドします。以下で、ビルドできます。
+
+>||
+gulp
+||<
+
+成功したら、index.htmlをWebブラウザーで表示して、先ほどまでと同じように表示されることを確認してください。
+
+
+* ファイルの更新を監視
+以上でgulpと入力するだけでビルドできるようになりました。さらに楽にするために、[http://whiskers.nukos.kitchen/2014/12/03/gulp-watch.html:title]を参考に、ファイルが修正されたら自動的にビルドが実行されるようにします。
+
+監視タスクの作成は簡単で、以下をgulpfile.jsの最後に追加します。
+>|javascript|
+// 監視タスクを作成
+gulp.task('watch', function() {
+    gulp.watch('./src/*.jsx', ['browserify']);
+    gulp.watch('./dist/index.html', ['browserify']);
+});
+||<
+- watchという名前で監視のタスクを作れます
+- 関数として、gulp.watch()を利用して、1つめの引数に、監視するファイルのパターンを書きます。例では、srcフォルダー内のどれかのファイルの変更を監視します
+- 2つめの引数で、実行するタスクを配列で指定します
+
+** 監視の起動
+ターミナルで以下を実行します。
+>||
+gulp watch
+||<
+
+src/app.jsxファイルを適当に変更して、保存してみてください。自動的にリビルドされます。
+
+
+* リビルド後にブラウザーでライブリロードする
+[http://www.browsersync.io/docs/gulp/:title]を参考に、ライブリロードするタスクをgulpに組み込みます。
+
+- gulpfile.jsの最初の方のrequire()をしているあたりに、以下の２行を追加します。
+>|javascript|
+var browserSync = require('browser-sync');
+var reload = browserSync.reload;
+||<
+- browserifyタスクのパイプの最後に、ブラウザの再読み込みを追加します。修正後は以下のとおりです。
+>|javascript|
+gulp.task('browserify', function(){
+    return browserify('./src/app.js')
+    .bundle()
+    .pipe(source('app.js'))
+    .pipe(gulp.dest('./dist'))
+    .on('end', function() {
+        reload();
+    });
+});
+||<
+- 監視タスクにブラウザーの起動設定を以下のとおり追加します。
+>|javascript|
+// 監視タスクを作成
+gulp.task('watch', function() {
+    browserSync({
+        notify: false,
+        logPrefix: 'BS',
+        server: ['./dist/']
+    });
+    gulp.watch('./src/*.jsx', ['browserify']);
+    gulp.watch('./dist/index.html', ['browserify']);
+});
+||<
+- 上記の server の配列に、ブラウザーに表示させたいベースディレクトリを指定します。この例ではプロジェクトフォルダー直下のindex.htmlが開きます。
+
+ターミナルで
+>||
+gulp watch
+||<
+で監視を開始します。その後、srcフォルダー内のファイルを変更すると、自動的にリビルドされて、ブラウザーの表示が切り替わります。
+
+
+以上で、ブラウザーサイドのrequireの利用、Reactのビルド、ファイルの監視、ブラウザーでのライブリロードができるようになります。
+
+
+* 完成ファイル
+以下に、ここまでのgulpfile.jsを示します。
+
+>|javascript|
+var gulp = require('gulp');
+var browserify = require('browserify');
+var source = require("vinyl-source-stream");
+var gutil = require('gulp-util');
+var browserSync = require('browser-sync');
+var reload = browserSync.reload;
+
+
+gulp.task('browserify', function(){
+  return browserify('./src/app.js')
+    .bundle()
+    .pipe(source('app.js'))
+    .pipe(gulp.dest('./dist'))
+    .on('end', function() {
+      reload();
+    });
+});
+
+// 監視タスクを作成
+gulp.task('watch', function() {
+  browserSync({
+    notify: false,
+    logPrefix: 'BS',
+    server: ['.']
+  });
+  gulp.watch('./src/*', ['browserify']);
+});
+
+gulp.task('default', ['browserify']);
+||<
+
+- package.json
+>|json|
+{
+  "name": "browserify-gulp-example",
+  "version": "0.0.1",
+  "description": "this package for browserify-gulp example",
+  "author": "YuTanaka",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.7.13",
+    "browserify": "^10.2.4",
+    "gulp": "^3.9.0",
+    "react": "^0.13.3",
+    "reactify": "^1.1.1",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "reactify",
+        {
+          "es6": true
+        }
+      ]
+    ]
+  }
+}
+||<
+
+
+* あとで入れたいもの
+[http://qiita.com/mizchi/items/b59a6c27558d238658c6:title]
+ビルド速度が遅くなってきたら、上記のプラグインを入れることでbrowserifyのビルドが高速化するようです。

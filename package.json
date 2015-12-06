@@ -1,0 +1,35 @@
+{
+  "name": "photo-exif-picker",
+  "version": "0.0.1",
+  "description": "ドラッグ＆ドロップした写真から緯度経度や時間など、指定のEXIFデータを取り出してCSVやGeoJSONで返す。クライアントサイドで動かす。",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify --debug --transform babelify src/app.jsx --outfile dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/am1tanaka/photo-exif-picker.git"
+  },
+  "keywords": [
+    "exif",
+    "csv",
+    "geojson"
+  ],
+  "author": "YuTanaka@AmuseOne",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/am1tanaka/photo-exif-picker/issues"
+  },
+  "homepage": "https://github.com/am1tanaka/photo-exif-picker",
+  "devDependencies": {
+    "babel-preset-react": "^6.3.13",
+    "babelify": "^7.2.0",
+    "browser-sync": "^2.10.0",
+    "browserify": "^12.0.1",
+    "gulp": "^3.9.0",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
