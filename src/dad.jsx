@@ -1,18 +1,21 @@
 var React = require('react');
-// hMatoba/piexifjs https://github.com/hMatoba/piexifjs
-var piexif = require('./libs/piexif.js');
 
 module.exports = React.createClass({
     propTypes: {
-        appendPhotoData: React.PropTypes.func.isRequired
+        appendPhotoData: React.PropTypes.func.isRequired,
+        readPhotos: React.PropTypes.func.isRequired
     },
     cancelEvent: function(event) {
         event.preventDefault();
         event.stopPropagation();
         return false;
     },
+    /** ドラッグ＆ドロップハンドラ関数*/
     handleDroppedFile: function(event) {
-        alert(event.originalEvent.dataTransfer.files.length);
+        this.props.readPhotos(event.originalEvent.dataTransfer.files);
+        // イベントをキャンセル
+        this.cancelEvent(event);
+        return false;
     },
     getInitialState: function() {
         return {

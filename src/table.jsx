@@ -7,6 +7,7 @@ var tableRow = function(row) {
             <td>{row.fileName}</td>
             <td>{row.lat}</td>
             <td>{row.lng}</td>
+            <td>{row.alt}</td>
             <td>{row.date} {row.time}</td>
         </tr>
     );
@@ -27,6 +28,7 @@ module.exports = React.createClass({
                         <th>ファイル名</th>
                         <th>緯度</th>
                         <th>経度</th>
+                        <th>高度</th>
                         <th>撮影日時</th>
                     </tr>
                 </thead>

@@ -5,6 +5,7 @@ module.exports = React.createClass({
     propTypes: {
         linkStateFileName: React.PropTypes.object.isRequired,
         linkStateLatLng: React.PropTypes.object.isRequired,
+        linkStateAlt: React.PropTypes.object.isRequired,
         linkStateDate: React.PropTypes.object.isRequired,
         linkStateTime: React.PropTypes.object.isRequired,
         linkStateCSV: React.PropTypes.object.isRequired,
@@ -27,6 +28,13 @@ module.exports = React.createClass({
                         <div className='checkbox'>
                             <label>
                                 <input type='checkbox' id='cbLatLng' checkedLink={this.props.linkStateLatLng} /> 緯度・経度
+                            </label>
+                        </div>
+                        &nbsp;/&nbsp;
+
+                        <div className='checkbox'>
+                            <label>
+                                <input type='checkbox' id='cbAlt' checkedLink={this.props.linkStateAlt} /> 高度
                             </label>
                         </div>
                         &nbsp;/&nbsp;

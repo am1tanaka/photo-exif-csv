@@ -5,6 +5,8 @@ var DaD = require('./dad.jsx');
 var ConfigMenu = require('./config-panel.jsx');
 var Table = require('./table.jsx');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
+// hMatoba/piexifjs https://github.com/hMatoba/piexifjs
+var piexif = require('./libs/piexif.js');
 
 var VERSION = "Ver151207.1";
 
@@ -16,7 +18,8 @@ var Top = React.createClass({
     /** データ*/
     getDefaultProps: function() {
         return {
-            initDatas: [
+            initDatas: []
+            /*
                 {
                     fileName: 'IMG0000.jpg',
                     lat: 35,
@@ -31,14 +34,17 @@ var Top = React.createClass({
                     date: '2015/12/7',
                     time: '16:31'
                 }
-            ]
+            ]*/
         };
     },
+    /** 読み込みオブジェクト*/
+    reader: null,
     /** 状態の定義*/
     getInitialState: function() {
             return {
                 exportFileName: true,
                 exportLatLng: true,
+                exportAlt: true,
                 exportDate: true,
                 exportTime: true,
                 typeCSV: true,
@@ -47,19 +53,108 @@ var Top = React.createClass({
                 photoDatas: this.props.initDatas,     // 読み込んんだ写真のデータ
             };
     },
+    /* 読み込みちゅうインデックス*/
+    nowIndex: 0,
+    /* ファイルリスト*/
+    files: [],
     /** 指定のデータをphotoDatasに追加*/
     appendPhotoData: function(data) {
+        // 同じファイル名のものがあったら上書き
+        var photos = this.state.photoDatas;
+        for (var i=0 ; i<photos.length ; i++) {
+            if (photos[i].fileName == data.fileName) {
+                photos[i] = data;
+                this.setState({photoDatas: photos});
+                return;
+            }
+        }
+        // 新しくデータを追加
         var newdt = this.state.photoDatas.concat([data]);
         this.setState({photoDatas: newdt});
     },
+    /** ファイルリストから写真を読み込む*/
+    readPhotos: function(fls) {
+        if (fls.length > 0) {
+            this.nowIndex = 0;
+            this.files = fls;
+            // 読み込み開始
+            this.readExif();
+        }
+    },
+    /** ファイルを読み込みながら解析していく*/
+    readExif: function() {
+        // オーバーしていたら終了
+        if (this.nowIndex >= this.files.length) {
+            return;
+        }
+        // 読み込み
+        this.reader.readAsDataURL(this.files[this.nowIndex]);
+        this.nowIndex++;
+    },
+    /** 緯度・経度を小数点表記に変換して返す*/
+    convLatLng: function(dt) {
+        return (dt[0][0]/dt[0][1])+(dt[1][0]/(dt[1][1]*60))+(dt[2][0]/(dt[2][1]*3600));
+    },
+    /** 高度を少数表記にして返す*/
+    convAlt: function(dt) {
+        return dt[1]==0 ? 0 : dt[0]/dt[1];
+    },
+    /** 日付を返す*/
+    getDate: function(dt) {
+        return dt.split(' ')[0].replace(/:/g, "/");
+    },
+    /** 時間を返す*/
+    getTime: function(dttm) {
+        return dttm.split(' ')[1];
+    },
+    componentDidMount: function() {
+        var that = this;
+        // リーダーの設定
+        if (this.reader == null) {
+            this.reader = new FileReader();
+            this.reader.onloadend = function(e) {
+                var exifObj = piexif.load(e.target.result);
+                /*
+                console.log(exifObj.GPS[piexif.GPSIFD.GPSLatitude]);
+                console.log(exifObj.GPS[piexif.GPSIFD.GPSLongitude]);
+                console.log(exifObj.GPS[piexif.GPSIFD.GPSAltitude]);
+                console.log(exifObj.Exif[piexif.ExifIFD.DateTimeOriginal]);
+                */
+                that.appendPhotoData({
+                    fileName: that.files[that.nowIndex-1].name,
+                    lat: that.convLatLng(exifObj.GPS[piexif.GPSIFD.GPSLatitude]),
+                    lng: that.convLatLng(exifObj.GPS[piexif.GPSIFD.GPSLongitude]),
+                    alt: that.convAlt(exifObj.GPS[piexif.GPSIFD.GPSAltitude]),
+                    date: that.getDate(exifObj.Exif[piexif.ExifIFD.DateTimeOriginal]),
+                    time: that.getTime(exifObj.Exif[piexif.ExifIFD.DateTimeOriginal])
+                });
+                /*
+                for(var ifd in exifObj) {
+                    if (ifd == "thumbnail") {
+                        continue;
+                    }
+                    console.log("-"+ifd);
+                    for (var tag in exifObj[ifd]) {
+                        console.log("  ["+tag+"]"+piexif.TAGS[ifd][tag]["name"]+":"+exifObj[ifd][tag]);
+                    }
+                }
+                */
+                // 再読み込み
+                that.readExif();
+            };
+        }
+
+    },
+    /** 描画*/
     render: function() {
         return (
             <div className='container'>
                 <Header ver={VERSION} />
-                <DaD appendPhotoData={this.appendPhotoData}/>
+                <DaD appendPhotoData={this.appendPhotoData} readPhotos={this.readPhotos} />
                 <ConfigMenu
                     linkStateFileName={this.linkState('exportFileName')}
                     linkStateLatLng={this.linkState('exportLatLng')}
+                    linkStateAlt={this.linkState('exportAlt')}
                     linkStateDate={this.linkState('exportDate')}
                     linkStateTime={this.linkState('exportTime')}
                     linkStateCSV={this.linkState('typeCSV')}
