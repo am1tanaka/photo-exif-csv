@@ -4,6 +4,7 @@ var Header = require('./header.jsx');
 var DaD = require('./dad.jsx');
 var ConfigMenu = require('./config-panel.jsx');
 var Table = require('./table.jsx');
+var LinkedStateMixin = require('react-addons-linked-state-mixin');
 
 var VERSION = "Ver151207.1";
 
@@ -11,6 +12,7 @@ var VERSION = "Ver151207.1";
  * 写真データから指定のデータを切り出すブラウザアプリトップ
  */
 var Top = React.createClass({
+    mixins: [LinkedStateMixin],
     /** データ*/
     getDefaultProps: function() {
         return {
@@ -35,7 +37,12 @@ var Top = React.createClass({
     /** 状態の定義*/
     getInitialState: function() {
             return {
-                exportFlags: [],
+                exportFileName: true,
+                exportLatLng: true,
+                exportDate: true,
+                exportTime: true,
+                typeCSV: true,
+                typeGeoJSON: false,
                 /* fileName:写真名 lat:緯度 lng:経度 date=撮影日 time=撮影時間*/
                 photoDatas: this.props.initDatas,     // 読み込んんだ写真のデータ
             };
@@ -50,7 +57,14 @@ var Top = React.createClass({
             <div className='container'>
                 <Header ver={VERSION} />
                 <DaD />
-                <ConfigMenu />
+                <ConfigMenu
+                    linkStateFileName={this.linkState('exportFileName')}
+                    linkStateLatLng={this.linkState('exportLatLng')}
+                    linkStateDate={this.linkState('exportDate')}
+                    linkStateTime={this.linkState('exportTime')}
+                    linkStateCSV={this.linkState('typeCSV')}
+                    linkStateGeoJSON={this.linkState('typeGeoJSON')}
+                />
                 <Table datas={this.state.photoDatas} />
             </div>
         );
