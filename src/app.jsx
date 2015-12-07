@@ -56,7 +56,7 @@ var Top = React.createClass({
         return (
             <div className='container'>
                 <Header ver={VERSION} />
-                <DaD />
+                <DaD appendPhotoData={this.appendPhotoData}/>
                 <ConfigMenu
                     linkStateFileName={this.linkState('exportFileName')}
                     linkStateLatLng={this.linkState('exportLatLng')}

@@ -1,13 +1,45 @@
 var React = require('react');
+// hMatoba/piexifjs https://github.com/hMatoba/piexifjs
+var piexif = require('./libs/piexif.js');
 
 module.exports = React.createClass({
+    propTypes: {
+        appendPhotoData: React.PropTypes.func.isRequired
+    },
+    cancelEvent: function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    },
+    handleDroppedFile: function(event) {
+        alert(event.originalEvent.dataTransfer.files.length);
+    },
+    getInitialState: function() {
+        return {
+            canDaD: true
+        };
+    },
+    /** コンポーネントの組み込みが完了*/
+    componentDidMount: function() {
+        this.setState({canDaD: !!window.FileReader});
+        if (!this.state.canDaD) return;
+        // ドラッグ＆ドロップ設定
+        var droppable = $('#droppable');
+        droppable.bind('dragenter', this.cancelEvent);
+        droppable.bind('dragover', this.cancelEvent);
+        droppable.bind('drop', this.handleDroppedFile);
+    },
+    /** シーンの描画 */
     render: function() {
+        // ドラッグ＆ドロップのメッセージの有無
+        var mes = this.state.canDaD ? <div>この欄に読み込みたい写真をドラッグ＆ドロップするか、以下から指定してください。<br/><br/></div> : "";
+
+        // 描画
         return(
             <table className='table table-bordered'>
                 <tbody>
                     <tr className='active'>
-                        <td>この欄に読み込みたい写真をドラッグ＆ドロップするか、以下から指定してください。<br/>
-                        <br/>
+                        <td id='droppable'>{mes}
                             <input type='file' name='file-photo' multiple='multiple' />
                         </td>
                     </tr>
