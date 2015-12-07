@@ -1,6 +1,9 @@
 var React = require('react');
 
 module.exports = React.createClass({
+    propTypes: {
+            ver: React.PropTypes.string.isRequired
+    },
     render: function() {
         return(
             <div>

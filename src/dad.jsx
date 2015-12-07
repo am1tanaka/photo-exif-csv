@@ -5,7 +5,7 @@ module.exports = React.createClass({
         return(
             <table className='table table-bordered'>
                 <tbody>
-                    <tr>
+                    <tr className='active'>
                         <td>この欄に読み込みたい写真をドラッグ＆ドロップするか、以下から指定してください。<br/>
                         <br/>
                             <input type='file' name='file-photo' multiple='multiple' />
