@@ -8,7 +8,8 @@ module.exports = React.createClass({
         linkStateAlt: React.PropTypes.object.isRequired,
         linkStateDate: React.PropTypes.object.isRequired,
         linkStateTime: React.PropTypes.object.isRequired,
-        linkStateCSV: React.PropTypes.object.isRequired,
+        linkStateCSVsjis: React.PropTypes.object.isRequired,
+        linkStateCSVutf8: React.PropTypes.object.isRequired,
         linkStateGeoJSON: React.PropTypes.object.isRequired
     },
     /* 描画ブロック*/
@@ -57,7 +58,13 @@ module.exports = React.createClass({
                     <div className='form-inline'>
                         <div className='radio'>
                             <label>
-                                <input type='radio' name='optionsType' id='radioCSV' value='csv' checkedLink={this.props.linkStateCSV} /> CSV
+                                <input type='radio' name='optionsType' id='radioCSVsjis' value='csv' checkedLink={this.props.linkStateCSVsjis} /> CSV(ShiftJIS)
+                            </label>
+                        </div>
+                        &nbsp;/&nbsp;
+                        <div className='radio'>
+                            <label>
+                                <input type='radio' name='optionsType' id='radioCSVutf8' value='csv' checkedLink={this.props.linkStateCSVutf8} /> CSV(UTF-8)
                             </label>
                         </div>
                         &nbsp;/&nbsp;

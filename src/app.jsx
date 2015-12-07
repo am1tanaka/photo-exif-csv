@@ -47,7 +47,8 @@ var Top = React.createClass({
                 exportAlt: true,
                 exportDate: true,
                 exportTime: true,
-                typeCSV: true,
+                typeCSVsjis: true,
+                typeCSVutf8: false,
                 typeGeoJSON: false,
                 /* fileName:写真名 lat:緯度 lng:経度 date=撮影日 time=撮影時間*/
                 photoDatas: this.props.initDatas,     // 読み込んんだ写真のデータ
@@ -157,7 +158,8 @@ var Top = React.createClass({
                     linkStateAlt={this.linkState('exportAlt')}
                     linkStateDate={this.linkState('exportDate')}
                     linkStateTime={this.linkState('exportTime')}
-                    linkStateCSV={this.linkState('typeCSV')}
+                    linkStateCSVsjis={this.linkState('typeCSVsjis')}
+                    linkStateCSVutf8={this.linkState('typeCSVutf8')}
                     linkStateGeoJSON={this.linkState('typeGeoJSON')}
                 />
                 <Table datas={this.state.photoDatas} />
