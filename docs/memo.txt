@@ -228,7 +228,7 @@ var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 
 
-gulp.task('browserify', function(){
+gulp.task('buildScripts', function(){
   return browserify('./src/app.js')
     .bundle()
     .pipe(source('app.js'))
@@ -245,10 +245,10 @@ gulp.task('watch', function() {
     logPrefix: 'BS',
     server: ['.']
   });
-  gulp.watch('./src/*', ['browserify']);
+  gulp.watch('./src/*', ['buildScripts']);
 });
 
-gulp.task('default', ['browserify']);
+gulp.task('default', ['buildScripts']);
 ||<
 
 - package.json
@@ -279,6 +279,21 @@ gulp.task('default', ['browserify']);
   }
 }
 ||<
+
+
+* エラー時の対応
+現状だと、JSXファイルのビルドに失敗すると動作が停止してしまいます。これを解消すると同時に、watchifyを導入して差分ビルドにも対応させます。
+
+** npmインストール
+環境に以下のパッケージを追加します。
+>||
+npm install --save-dev watchify gulp-load-plugins gulp-util
+
+- gulpfile.jsの最初に以下を追加
+>|javascript|
+var watchify = require('watchify');
+||<
+
 
 
 * あとで入れたいもの
