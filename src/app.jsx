@@ -48,9 +48,8 @@ var Top = React.createClass({
                 exportAlt: true,
                 exportDate: true,
                 exportTime: true,
-                typeCSVsjis: true,
-                typeCSVutf8: false,
-                typeGeoJSON: false,
+                // CSVsjis CSVutf8 GeoJSON
+                outputType: "CSVsjis",
                 /* fileName:写真名 lat:緯度 lng:経度 date=撮影日 time=撮影時間*/
                 photoDatas: this.props.initDatas,     // 読み込んんだ写真のデータ
             };
@@ -116,17 +115,30 @@ var Top = React.createClass({
     /** 出力ボタンの処理*/
     handleExportData: function() {
         var csv = "";
-        if (this.state.typeCSVsjis) {
+        var enc = "utf-8";
+        var ext = "csv";
+        switch(this.state.outputType) {
+            case "CSVsjis":
             csv = convertData.exportCSV(this.state, "SJIS");
-        }
-        else if (this.state.typeCSVutf8) {
-            csv = convertData.exportCSV(this.state, "UTF8");
-        }
-        else if (this.state.typeGeoJSON) {
+            enc = "shift_jis";
+            break;
+            case "CSVutf8":
+            csv = convertData.exportCSV(this.state, "Unicode");
+            break;
+            case "GeoJSON":
             csv = convertData.exportGeoJSON(this.state);
+            ext = "geojson";
+            break;
         }
         // ダウンロード
-        alert(csv);
+        $('#btnDownload').attr({
+            download: "download."+ext,
+            href: 'data:text/plain;charset=' + enc + ',' + encodeURIComponent(csv)
+        });
+    },
+    /** 出力形式のラジオボタンの変更*/
+    handleChangeType: function(e) {
+        this.setState({outputType: e.currentTarget.value});
     },
     /** コンポーネントの準備が完了したら、各種イベントなどを設定*/
     componentDidMount: function() {
@@ -178,9 +190,8 @@ var Top = React.createClass({
                     linkStateAlt={this.linkState('exportAlt')}
                     linkStateDate={this.linkState('exportDate')}
                     linkStateTime={this.linkState('exportTime')}
-                    linkStateCSVsjis={this.linkState('typeCSVsjis')}
-                    linkStateCSVutf8={this.linkState('typeCSVutf8')}
-                    linkStateGeoJSON={this.linkState('typeGeoJSON')}
+                    handleChangeType={this.handleChangeType}
+                    outputType={this.state.outputType}
                     handleExport={this.handleExportData}
                 />
                 <Table datas={this.state.photoDatas} />

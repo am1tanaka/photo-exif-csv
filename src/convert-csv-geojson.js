@@ -32,8 +32,6 @@ module.exports.exportCSV = function(state, enc) {
         header.push('"撮影時間"');
     }
 
-    console.log(state);
-
     // データを処理する
     body = state.photoDatas.map(function(data) {
         var line = [];
@@ -55,8 +53,6 @@ module.exports.exportCSV = function(state, enc) {
         }
         return line.join(',')+"\r\n";
     });
-
-    alert(enc);
 
     return encoding.convert(header.join(",")+"\r\n"+body, enc);
 };
