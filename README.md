@@ -6,3 +6,5 @@
   - MIT License https://github.com/hMatoba/piexifjs/blob/master/LICENSE.txt
 - Twitter Inc. Bootstrap3
   - MIT License https://github.com/twbs/bootstrap/blob/master/LICENSE
+- polygonplanet encoding.js https://github.com/polygonplanet/encoding.js
+  - MIT
