@@ -110,7 +110,7 @@ var Top = React.createClass({
         return dttm.split(' ')[1];
     },
     /** 出力ボタンの処理*/
-    handleExport: function() {
+    handleExportData: function() {
         alert("出力");
     },
     /** コンポーネントの準備が完了したら、各種イベントなどを設定*/
@@ -167,7 +167,7 @@ var Top = React.createClass({
                     linkStateCSVsjis={this.linkState('typeCSVsjis')}
                     linkStateCSVutf8={this.linkState('typeCSVutf8')}
                     linkStateGeoJSON={this.linkState('typeGeoJSON')}
-                    handleExport={this.handleExport}
+                    handleExport={this.handleExportData}
                 />
                 <Table datas={this.state.photoDatas} />
             </div>
