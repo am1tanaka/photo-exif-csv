@@ -55,30 +55,29 @@ module.exports = React.createClass({
 
                     </div>
 
-                    <div className='form-inline'>
-                        <div className='radio'>
-                            <label>
-                                <input type='radio' name='optionsType' id='radioCSVsjis' value='CSVsjis'
-                                    checked={this.props.outputType==="CSVsjis"}
-                                    onChange={this.props.handleChangeType} /> CSV(ShiftJIS)
-                            </label>
-                        </div>
-                        &nbsp;/&nbsp;
-                        <div className='radio'>
-                            <label>
-                                <input type='radio' name='optionsType' id='radioCSVutf8' value='CSVutf8'
-                                    checked={this.props.outputType==="CSVutf8"}
-                                    onChange={this.props.handleChangeType} /> CSV(UTF-8)
-                            </label>
-                        </div>
-                        &nbsp;/&nbsp;
-                        <div className='radio'>
-                            <label>
-                                <input type='radio' name='optionsType' id='radioGeoJSON' value='GeoJSON'
-                                    checked={this.props.outputType==="GeoJSON"}
-                                    onChange={this.props.handleChangeType} /> GeoJSON
-                            </label>
-                        </div>
+                    <hr/>
+                    <strong>出力形式</strong>
+
+                    <div className='radio'>
+                        <label>
+                            <input type='radio' name='optionsType' id='radioCSVsjis' value='CSVsjis'
+                                checked={this.props.outputType==="CSVsjis"}
+                                onChange={this.props.handleChangeType} /> Windows Excelなど(CSV ShiftJIS)
+                        </label>
+                    </div>
+                    <div className='radio'>
+                        <label>
+                            <input type='radio' name='optionsType' id='radioCSVutf8' value='CSVutf8'
+                                checked={this.props.outputType==="CSVutf8"}
+                                onChange={this.props.handleChangeType} /> Mac Numbersなど(CSV UTF-8)
+                        </label>
+                    </div>
+                    <div className='radio'>
+                        <label>
+                            <input type='radio' name='optionsType' id='radioGeoJSON' value='GeoJSON'
+                                checked={this.props.outputType==="GeoJSON"}
+                                onChange={this.props.handleChangeType} /> GeoJSON
+                        </label>
                     </div>
 
                     <br/>
