@@ -10,7 +10,8 @@ module.exports = React.createClass({
         linkStateTime: React.PropTypes.object.isRequired,
         linkStateCSVsjis: React.PropTypes.object.isRequired,
         linkStateCSVutf8: React.PropTypes.object.isRequired,
-        linkStateGeoJSON: React.PropTypes.object.isRequired
+        linkStateGeoJSON: React.PropTypes.object.isRequired,
+        handleExport: React.PropTypes.func.isRequired
     },
     /* 描画ブロック*/
     render: function() {
@@ -78,7 +79,7 @@ module.exports = React.createClass({
                     <br/>
 
                     <div>
-                        <button type='button' className='btn btn-primary'>出力</button>
+                        <button type='button' className='btn btn-primary' onClick={this.props.handleExport}>出力</button>
                     </div>
                 </div>
             </div>

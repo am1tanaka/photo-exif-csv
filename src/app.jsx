@@ -7,6 +7,7 @@ var Table = require('./table.jsx');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
 // hMatoba/piexifjs https://github.com/hMatoba/piexifjs
 var piexif = require('./libs/piexif.js');
+var exportData = require('./export.js');
 
 var VERSION = "Ver151207.1";
 
@@ -108,6 +109,11 @@ var Top = React.createClass({
     getTime: function(dttm) {
         return dttm.split(' ')[1];
     },
+    /** 出力ボタンの処理*/
+    handleExport: function() {
+        alert("出力");
+    },
+    /** コンポーネントの準備が完了したら、各種イベントなどを設定*/
     componentDidMount: function() {
         var that = this;
         // リーダーの設定
@@ -161,6 +167,7 @@ var Top = React.createClass({
                     linkStateCSVsjis={this.linkState('typeCSVsjis')}
                     linkStateCSVutf8={this.linkState('typeCSVutf8')}
                     linkStateGeoJSON={this.linkState('typeGeoJSON')}
+                    handleExport={this.handleExport}
                 />
                 <Table datas={this.state.photoDatas} />
             </div>
