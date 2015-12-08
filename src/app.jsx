@@ -7,7 +7,7 @@ var Table = require('./table.jsx');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
 // hMatoba/piexifjs https://github.com/hMatoba/piexifjs
 var piexif = require('./libs/piexif.js');
-var exportData = require('./export.js');
+var convertData = require('./convert-csv-geojson.js');
 
 var VERSION = "Ver151207.1";
 
@@ -109,9 +109,24 @@ var Top = React.createClass({
     getTime: function(dttm) {
         return dttm.split(' ')[1];
     },
+    /** CSVファイルを作成*/
+    makeCSV: function() {
+
+    },
     /** 出力ボタンの処理*/
     handleExportData: function() {
-        alert("出力");
+        var csv = "";
+        if (this.state.typeCSVsjis) {
+            csv = convertData.exportCSV(this.state, "SJIS");
+        }
+        else if (this.state.typeCSVutf8) {
+            csv = convertData.exportCSV(this.state, "UTF8");
+        }
+        else if (this.state.typeGeoJSON) {
+            csv = convertData.exportGeoJSON(this.state);
+        }
+        // ダウンロード
+        alert(csv);
     },
     /** コンポーネントの準備が完了したら、各種イベントなどを設定*/
     componentDidMount: function() {
@@ -150,7 +165,6 @@ var Top = React.createClass({
                 that.readExif();
             };
         }
-
     },
     /** 描画*/
     render: function() {
