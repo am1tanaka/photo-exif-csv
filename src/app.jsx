@@ -120,7 +120,7 @@ var Top = React.createClass({
             enc = "shift_jis";
             break;
             case "CSVutf8":
-            csv = convertData.exportCSV(this.state, "Unicode");
+            csv = convertData.exportCSV(this.state, "UTF8");
             break;
             case "GeoJSON":
             csv = convertData.exportGeoJSON(this.state);
@@ -130,8 +130,7 @@ var Top = React.createClass({
         // ダウンロード
         $('#btnDownload').attr({
             download: "download."+ext,
-            href: 'data:text/plain;charset=' + enc + ',' + csv/*encodeURIComponent(csv)*/
-            //href: 'data:text/plain;charset=' + enc + ',' + encodeURIComponent(csv)
+            href: csv
         });
     },
     /** 出力形式のラジオボタンの変更*/
