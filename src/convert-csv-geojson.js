@@ -51,10 +51,15 @@ module.exports.exportCSV = function(state, enc) {
         if (state.exportTime) {
             line.push('"'+data.time+'"');
         }
-        return line.join(',')+"\r\n";
+        var temp = line.join(',')+"\r\n";
+        return temp;
     });
 
-    return encoding.convert(header.join(",")+"\r\n"+body, enc);
+    var ret = header.join(",")+"\r\n"+body.join("");
+    //return ret;
+    return encoding.convert(encoding.stringToCode(ret), enc);
+    //return encoding.codeToString (encoding.convert(encoding.stringToCode(ret), enc));
+    //return String.fromCharCode.apply(null, (encoding.convert(encoding.stringToCode(ret), enc)));
 };
 
 /**
