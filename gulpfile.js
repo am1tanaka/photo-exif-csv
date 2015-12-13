@@ -44,7 +44,7 @@ gulp.task( 'watchify', function() {
  * jscompile function
  */
 function jscompile( is_watch ) {
-    var bundle;
+    var bundler;
     if ( is_watch ) {
         bundler = watchify( browserify( jsSrcPath + jsSrcFile ) );
     } else {
@@ -53,9 +53,18 @@ function jscompile( is_watch ) {
 
     function rebundle() {
         console.log("rebundle");
+        var transTimer = $.duration('transform time');
+        var bundleTimer = $.duration('bundle time');
+        var outputTimer = $.duration('output time');
+
         return bundler
+            //.once('data', transTimer.start)
             .transform(babelify, {presets:["react"]})
+            //.pipe(transTimer)
+            .once('data', bundleTimer.start)
             .bundle()
+            .pipe(bundleTimer)
+            .once('data', outputTimer.start)
             .on('error', $.util.log.bind($.util, 'Browserify Error'))
             .pipe( source('app.js') )
             .pipe($.debug())
@@ -64,6 +73,7 @@ function jscompile( is_watch ) {
             .pipe( $.uglify() )
             */
             .pipe(gulp.dest( jsDestPath ) )
+            .pipe(outputTimer)
             .on('end', function() {
                 reload();
             });

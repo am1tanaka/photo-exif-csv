@@ -30,6 +30,7 @@
     "encoding-japanese": "^1.0.24",
     "gulp": "^3.9.0",
     "gulp-debug": "^2.1.2",
+    "gulp-duration": "0.0.0",
     "gulp-load-plugins": "^1.1.0",
     "gulp-uglify": "^1.5.1",
     "gulp-util": "^3.0.7",
