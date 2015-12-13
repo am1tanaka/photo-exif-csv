@@ -86,6 +86,7 @@ var Top = React.createClass({
     readExif: function() {
         // オーバーしていたら終了
         if (this.nowIndex >= this.files.length) {
+            alert("読み込みを完了しました。");
             return;
         }
         // 読み込み
@@ -108,10 +109,6 @@ var Top = React.createClass({
     getTime: function(dttm) {
         return dttm.split(' ')[1];
     },
-    /** CSVファイルを作成*/
-    makeCSV: function() {
-
-    },
     /** 出力ボタンの処理*/
     handleExportData: function() {
         var csv = "";
@@ -123,7 +120,7 @@ var Top = React.createClass({
             enc = "shift_jis";
             break;
             case "CSVutf8":
-            csv = convertData.exportCSV(this.state, "Unicode");
+            csv = convertData.exportCSV(this.state, "UTF8");
             break;
             case "GeoJSON":
             csv = convertData.exportGeoJSON(this.state);
@@ -133,7 +130,7 @@ var Top = React.createClass({
         // ダウンロード
         $('#btnDownload').attr({
             download: "download."+ext,
-            href: 'data:text/plain;charset=' + enc + ',' + encodeURIComponent(csv)
+            href: csv
         });
     },
     /** 出力形式のラジオボタンの変更*/

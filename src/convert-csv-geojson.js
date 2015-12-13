@@ -10,7 +10,7 @@ var encoding = require('encoding-japanese');
  * データを渡して、指定の形式で保存する
  * @param array state appのstate
  * @param string enc エンコード。ShiftJISは'SJIS'。UTF8は'UTF8'
- * @return string 指定の文字エンコードしたCSV文字列
+ * @return string 指定の文字エンコードしたCSVのバイト配列を返す
  */
 module.exports.exportCSV = function(state, enc) {
     var body = "";
@@ -51,10 +51,16 @@ module.exports.exportCSV = function(state, enc) {
         if (state.exportTime) {
             line.push('"'+data.time+'"');
         }
-        return line.join(',')+"\r\n";
+        var temp = line.join(',')+"\r\n";
+        return temp;
     });
 
-    return encoding.convert(header.join(",")+"\r\n"+body, enc);
+    var csv = header.join(",")+"\r\n"+body.join("");
+    var sjis_array = encoding.convert(encoding.stringToCode(csv), enc);
+    var uint8_array = new Uint8Array(sjis_array);
+    var blob = new Blob([uint8_array], { type: 'text/csv;charset='+enc });
+    var ret = (window.URL || window.webkitURL).createObjectURL(blob);
+    return ret;
 };
 
 /**
