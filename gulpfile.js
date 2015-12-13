@@ -1,3 +1,10 @@
+/*
+ * 参考: http://2inc.org/blog/2015/05/13/4818/
+ */
+
+/*
+ * modules load
+ */
 var $ = require('gulp-load-plugins')();
 var gulp = require('gulp');
 var browserify = require('browserify');
@@ -6,45 +13,73 @@ var source = require('vinyl-source-stream');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 var watchify = require('watchify');
+var buffer = require('vinyl-buffer');
 
-/** ビルド時に差分があるかをチェックするためのオブジェクト*/
-var bundler = watchify(browserify({
-    entries: ['./src/app.jsx'],
-    debug: true,
-    insertGlobals: true,
-    cache: {},
-    packageCache: {},
-    fullPaths: true
-}));
+/*
+ * paths
+ */
+var jsSrcPath = './src/';
+var jsSrcFile = 'app.jsx';
+var jsDestPath = './dist/';
 
-/** bundlerの更新イベント時にrebundleを実行*/
-bundler.on('update', rebundle);
-bundler.on('log', $.util.log);
+/*
+ * tasks
+ */
 
-/** watchifyで更新を確認したら実行するイベント*/
-function rebundle() {
-    return bundler
-        .transform(babelify, {presets:["react"]})
-        .bundle()
-        .on('error', $.util.log.bind($.util, 'Browserify Error'))
-        .pipe(source('app.js'))
-        .pipe(gulp.dest('./dist'))
-        .on('end', function() {
-            reload();
-        });
-}
-
-/** スクリプトのビルドタスク*/
-gulp.task('scripts', rebundle);
-
-/** 最初のビルド*/
-gulp.task('buildScripts', function(){
-  return browserify('./src/app.js')
-    .bundle()
-    .pipe(source('app.js'))
-    .pipe(gulp.dest('./dist'));
+/**
+ * browserify
+ */
+gulp.task( 'browserify', function() {
+    return jscompile( false );
 });
 
+/**
+ * watchify
+ */
+gulp.task( 'watchify', function() {
+    return jscompile( true );
+});
+
+/**
+ * jscompile function
+ */
+function jscompile( is_watch ) {
+    var bundle;
+    if ( is_watch ) {
+        bundler = watchify( browserify( jsSrcPath + jsSrcFile ) );
+    } else {
+        bundler = browserify( jsSrcPath + jsSrcFile );
+    }
+
+    function rebundle() {
+        console.log("rebundle");
+        return bundler
+            .transform(babelify, {presets:["react"]})
+            .bundle()
+            .on('error', $.util.log.bind($.util, 'Browserify Error'))
+            .pipe( source('app.js') )
+            .pipe($.debug())
+            /*
+            .pipe( buffer() )
+            .pipe( $.uglify() )
+            */
+            .pipe(gulp.dest( jsDestPath ) )
+            .on('end', function() {
+                reload();
+            });
+    }
+    bundler.on( 'update', function() {
+        rebundle();
+    } );
+    bundler.on( 'log', function( message ) {
+        console.log( message );
+    } );
+    return rebundle();
+}
+
+/*
+ * 実行時に必要なファイルをコピー
+ */
 gulp.task('plugins', function() {
     gulp.src('./node_modules/bootstrap/dist/css/bootstrap*.min.css')
         .pipe(gulp.dest('dist/css'));
@@ -56,12 +91,8 @@ gulp.task('plugins', function() {
         .pipe(gulp.dest('dist/plugins'));
 });
 
-gulp.task('buildBundle', ['plugins','buildScripts'], function(){
-
-});
-
 // 監視タスクを作成
-gulp.task('watch', ['plugins', 'scripts'], function() {
+gulp.task('watch', ['plugins', 'watchify'], function() {
     browserSync({
         notify: false,
         logPrefix: 'BS',
@@ -70,5 +101,8 @@ gulp.task('watch', ['plugins', 'scripts'], function() {
     gulp.watch('./dist/index.html', reload);
 });
 
+gulp.task('buildBundle', ['plugins','browserify'], function(){
+
+});
 
 gulp.task('default', ['buildBundle']);

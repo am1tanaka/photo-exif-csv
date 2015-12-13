@@ -3,7 +3,7 @@
  * @copyright 2015 YuTanaka@AmuseOne
  */
 
-var React = require('react');
+var React = require('react/dist/react.min');
 var encoding = require('encoding-japanese');
 
 /**

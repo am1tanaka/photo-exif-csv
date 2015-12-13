@@ -1,4 +1,4 @@
-var React = require('react');
+var React = require('react/dist/react.min');
 
 /** テーブルの行描画*/
 var tableRow = function(row) {

@@ -1,5 +1,5 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+var React = require('react/dist/react.min');
+var ReactDOM = require('react-dom/dist/react-dom.min');
 var Header = require('./header.jsx');
 var DaD = require('./dad.jsx');
 var ConfigMenu = require('./config-panel.jsx');
@@ -9,7 +9,7 @@ var LinkedStateMixin = require('react-addons-linked-state-mixin');
 var piexif = require('./libs/piexif.js');
 var convertData = require('./convert-csv-geojson.js');
 
-var VERSION = "Ver151207.1";
+var VERSION = "Ver151213.2";
 
 /**
  * 写真データから指定のデータを切り出すブラウザアプリトップ

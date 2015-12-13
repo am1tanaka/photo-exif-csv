@@ -1,4 +1,4 @@
-var React = require('react');
+var React = require('react/dist/react.min');
 
 module.exports = React.createClass({
     /* props定義*/
