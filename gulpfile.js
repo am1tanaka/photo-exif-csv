@@ -45,10 +45,17 @@ gulp.task( 'watchify', function() {
  */
 function jscompile( is_watch ) {
     var bundler;
+    var props = {
+        entries: jsSrcPath + jsSrcFile,
+        debug: true,
+        cache: {},
+        packageCache: {},
+        fullPaths: true
+    };
     if ( is_watch ) {
-        bundler = watchify( browserify( jsSrcPath + jsSrcFile ) );
+        bundler = watchify( browserify( props ) );
     } else {
-        bundler = browserify( jsSrcPath + jsSrcFile );
+        bundler = browserify( props );
     }
 
     function rebundle() {

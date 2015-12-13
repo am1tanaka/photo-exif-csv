@@ -9,7 +9,7 @@ var LinkedStateMixin = require('react-addons-linked-state-mixin');
 var piexif = require('./libs/piexif.js');
 var convertData = require('./convert-csv-geojson.js');
 
-var VERSION = "Ver151213.2";
+var VERSION = "Ver151213.1";
 
 /**
  * 写真データから指定のデータを切り出すブラウザアプリトップ
