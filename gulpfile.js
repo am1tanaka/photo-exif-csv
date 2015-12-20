@@ -80,10 +80,11 @@ function jscompile( is_watch ) {
             .pipe( $.uglify() )
             */
             .pipe(gulp.dest( jsDestPath ) )
-            .pipe(outputTimer)
             .on('end', function() {
+                console.log( "reload" );
                 reload();
-            });
+            })
+            .pipe(outputTimer);
     }
     bundler.on( 'update', function() {
         rebundle();
