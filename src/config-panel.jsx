@@ -24,28 +24,28 @@ module.exports = React.createClass({
                                 <input type='checkbox' id='cbFileName' checkedLink={this.props.linkStateFileName} /> ファイル名
                             </label>
                         </div>
-                        &nbsp;/&nbsp;
+                        <span className='hidden-xs'>&nbsp;/&nbsp;</span>
 
                         <div className='checkbox'>
                             <label>
                                 <input type='checkbox' id='cbLatLng' checkedLink={this.props.linkStateLatLng} /> 緯度・経度
                             </label>
                         </div>
-                        &nbsp;/&nbsp;
+                        <span className='hidden-xs'>&nbsp;/&nbsp;</span>
 
                         <div className='checkbox'>
                             <label>
                                 <input type='checkbox' id='cbAlt' checkedLink={this.props.linkStateAlt} /> 高度
                             </label>
                         </div>
-                        &nbsp;/&nbsp;
+                        <span className='hidden-xs'>&nbsp;/&nbsp;</span>
 
                         <div className='checkbox'>
                             <label>
                                 <input type='checkbox' id='cbTakeDate' checkedLink={this.props.linkStateDate} /> 撮影日
                             </label>
                         </div>
-                        &nbsp;/&nbsp;
+                        <span className='hidden-xs'>&nbsp;/&nbsp;</span>
 
                         <div className='checkbox'>
                             <label>
