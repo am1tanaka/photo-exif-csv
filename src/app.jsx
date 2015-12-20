@@ -144,7 +144,13 @@ var Top = React.createClass({
         if (this.reader == null) {
             this.reader = new FileReader();
             this.reader.onloadend = function(e) {
-                var exifObj = piexif.load(e.target.result);
+                try {
+                    var exifObj = piexif.load(e.target.result);
+                }
+                catch (e) {
+                    alert("Exifの読み込みに失敗しました。写真データが破損している可能性があります。");
+                    return;
+                }
                 /*
                 console.log(exifObj.GPS[piexif.GPSIFD.GPSLatitude]);
                 console.log(exifObj.GPS[piexif.GPSIFD.GPSLongitude]);
