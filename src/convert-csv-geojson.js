@@ -9,28 +9,13 @@ var encoding = require('encoding-japanese');
 /**
  * データを渡して、指定の形式で保存する
  * @param array state appのstate
- * @param string enc エンコード。ShiftJISは'SJIS'。UTF8は'UTF8'
+ * @param string enc エンコード。ShiftJISは'SJIS'。UTF8は'UTF8'。ShiftJISでヘッダなしは'MANDARA'
  * @return string 指定の文字エンコードしたCSVのバイト配列を返す
  */
 module.exports.exportCSV = function(state, enc) {
     var body = "";
     var header = [];
-    // ヘッダーの出力
-    if (state.exportFileName) {
-        header.push('"ファイル名"');
-    }
-    if (state.exportLatLng) {
-        header.push('"緯度","経度"');
-    }
-    if (state.exportAlt) {
-        header.push('"高度"');
-    }
-    if (state.exportDate) {
-        header.push('"撮影日"');
-    }
-    if (state.exportTime) {
-        header.push('"撮影時間"');
-    }
+    var csv = "";
 
     // データを処理する
     body = state.photoDatas.map(function(data) {
@@ -55,7 +40,29 @@ module.exports.exportCSV = function(state, enc) {
         return temp;
     });
 
-    var csv = header.join(",")+"\r\n"+body.join("");
+    // ヘッダーの出力
+    if (enc != "MANDARA") {
+      if (state.exportFileName) {
+          header.push('"ファイル名"');
+      }
+      if (state.exportLatLng) {
+          header.push('"緯度","経度"');
+      }
+      if (state.exportAlt) {
+          header.push('"高度"');
+      }
+      if (state.exportDate) {
+          header.push('"撮影日"');
+      }
+      if (state.exportTime) {
+          header.push('"撮影時間"');
+      }
+      csv = header.join(",")+"\r\n"+body.join("");
+    } else {
+      enc = "SJIS";
+      csv = body.join("");
+    }
+
     var sjis_array = encoding.convert(encoding.stringToCode(csv), enc);
     var uint8_array = new Uint8Array(sjis_array);
     var blob = new Blob([uint8_array], { type: 'text/csv;charset='+enc });

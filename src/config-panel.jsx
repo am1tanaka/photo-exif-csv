@@ -60,6 +60,13 @@ module.exports = React.createClass({
 
                     <div className='radio'>
                         <label>
+                            <input type='radio' name='optionsType' id='radioCSVmandara' value='CSVmandara'
+                                checked={this.props.outputType==="CSVmandara"}
+                                onChange={this.props.handleChangeType} /> MANDARAマップエディタ用CSV
+                        </label>
+                    </div>
+                    <div className='radio'>
+                        <label>
                             <input type='radio' name='optionsType' id='radioCSVsjis' value='CSVsjis'
                                 checked={this.props.outputType==="CSVsjis"}
                                 onChange={this.props.handleChangeType} /> Windows Excelなど(CSV ShiftJIS)

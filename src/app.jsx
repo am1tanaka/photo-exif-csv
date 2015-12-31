@@ -49,7 +49,7 @@ var Top = React.createClass({
                 exportDate: true,
                 exportTime: true,
                 // CSVsjis CSVutf8 GeoJSON
-                outputType: "CSVsjis",
+                outputType: "CSVmandara",
                 /* fileName:写真名 lat:緯度 lng:経度 date=撮影日 time=撮影時間*/
                 photoDatas: this.props.initDatas,     // 読み込んんだ写真のデータ
             };
@@ -115,6 +115,10 @@ var Top = React.createClass({
         var enc = "utf-8";
         var ext = "csv";
         switch(this.state.outputType) {
+            case "CSVmandara":
+            csv = convertData.exportCSV(this.state, "MANDARA");
+            enc = "shift_jis";
+            break;
             case "CSVsjis":
             csv = convertData.exportCSV(this.state, "SJIS");
             enc = "shift_jis";
