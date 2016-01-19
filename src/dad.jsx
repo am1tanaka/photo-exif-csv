@@ -35,7 +35,7 @@ module.exports = React.createClass({
     /** シーンの描画 */
     render: function() {
         // ドラッグ＆ドロップのメッセージの有無
-        var mes = this.state.canDaD ? <div>この欄に読み込みたい写真をドラッグ＆ドロップするか、以下から指定してください。<br/><br/></div> : "";
+        var mes = this.state.canDaD ? <div><h2>この欄に読み込みたい写真をドラッグ＆ドロップするか、以下から指定してください。</h2><br/><br/></div> : "";
 
         // 描画
         return(

@@ -201,7 +201,7 @@ var Top = React.createClass({
                     outputType={this.state.outputType}
                     handleExport={this.handleExportData}
                 />
-                <Table datas={this.state.photoDatas} />
+                <Table datas={this.state} />
             </div>
         );
     }
