@@ -54,7 +54,7 @@ var Top = React.createClass({
                 photoDatas: this.props.initDatas,     // 読み込んんだ写真のデータ
             };
     },
-    /* 読み込みちゅうインデックス*/
+    /* 読み込み中インデックス*/
     nowIndex: 0,
     /* ファイルリスト*/
     files: [],
