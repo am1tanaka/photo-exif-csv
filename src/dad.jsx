@@ -1,4 +1,5 @@
 var React = require('react/dist/react.min');
+var FileInput = require('react-file-input');
 
 module.exports = React.createClass({
     propTypes: {
@@ -32,22 +33,48 @@ module.exports = React.createClass({
         droppable.bind('dragover', this.cancelEvent);
         droppable.bind('drop', this.handleDroppedFile);
     },
+    /** ファイルが選択された時のハンドラ*/
+    handleSelectFile : function(event) {
+        this.props.readPhotos(event.target.files);
+        // イベントをキャンセル
+        this.cancelEvent(event);
+        return false;
+    },
     /** シーンの描画 */
     render: function() {
         // ドラッグ＆ドロップのメッセージの有無
         var mes = this.state.canDaD ? <div><h2>この欄に読み込みたい写真をドラッグ＆ドロップするか、以下から指定してください。</h2><br/><br/></div> : "";
 
+/*
+<div id='file-button-block'>
+    <FileInput name='file-photo'
+        accept='.jpg'
+        placeholder='写真'
+        className='inputClass'
+        onChange={this.handleSelectFile}
+        multiple='multiple' />
+</div>
+*/
+
         // 描画
         return(
+            <div>
             <table className='table table-bordered'>
                 <tbody>
                     <tr className='active'>
                         <td id='droppable'>{mes}
-                            <input type='file' name='file-photo' multiple='multiple' />
+                            <input
+                                type='file'
+                                name='file-photo'
+                                accept='.jpg'
+                                onChange={this.handleSelectFile}
+                                multiple />
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
         );
     }
 });
