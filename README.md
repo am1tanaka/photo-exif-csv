@@ -10,6 +10,3 @@
 - polygonplanet encoding.js https://github.com/polygonplanet/encoding.js
   - Shift-JISとUTF-8の文字エンコード変換に利用。他の文字エンコードにも対応し、半角や全角などの変換も可能
   - MIT
-- https://www.npmjs.com/package/react-file-input
-  - Reactでファイル入力を簡単に扱うためのプラグイン
-  - MIT
