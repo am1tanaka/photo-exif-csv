@@ -85,7 +85,7 @@ module.exports = React.createClass({
                                 onChange={this.props.handleChangeType} /> Mac Numbersなど(CSV UTF-8)
                         </label>
                     </div>
-                    <div className='radio'>
+                    <div className='radio hidden'>
                         <label>
                             <input type='radio' name='optionsType' id='radioGeoJSON' value='GeoJSON'
                                 checked={this.props.outputType==="GeoJSON"}
