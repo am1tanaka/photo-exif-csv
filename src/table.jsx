@@ -10,6 +10,7 @@ module.exports = React.createClass({
     /** propsの定義*/
     propTypes: {
         datas: React.PropTypes.array.isRequired,
+        visible: React.PropTypes.bool
     },
     /** 指定のものを全てフラグに応じて表示・非表示する
      * @param bool isshow true=表示 / false=非表示
@@ -64,6 +65,11 @@ module.exports = React.createClass({
     },
     /** シーン描画*/
     render: function() {
+        // 非表示
+        if (!this.props.visible) {
+            return <div></div>;
+        }
+
         var tbody = this.props.datas.photoDatas.map(this.tableRow);
         var st = this.props.datas;
         var dt = "撮影日時";

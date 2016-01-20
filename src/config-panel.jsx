@@ -10,10 +10,16 @@ module.exports = React.createClass({
         linkStateTime: React.PropTypes.object.isRequired,
         handleChangeType: React.PropTypes.func.isRequired,
         outputType: React.PropTypes.string.isRequired,
-        handleExport: React.PropTypes.func.isRequired
+        handleExport: React.PropTypes.func.isRequired,
+        visible : React.PropTypes.bool
     },
     /* 描画ブロック*/
     render: function() {
+        // 非表示対応
+        if (!this.props.visible) {
+            return <div></div>;
+        }
+
         return(
             <div className='panel panel-default'>
                 <div className='panel-heading'>出力する項目にチェックを入れてください。</div>

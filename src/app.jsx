@@ -200,8 +200,11 @@ var Top = React.createClass({
                     handleChangeType={this.handleChangeType}
                     outputType={this.state.outputType}
                     handleExport={this.handleExportData}
+                    visible={this.state.photoDatas.length > 0}
                 />
-                <Table datas={this.state} />
+                <Table datas={this.state}
+                    visible={this.state.photoDatas.length > 0}
+                    />
             </div>
         );
     }
