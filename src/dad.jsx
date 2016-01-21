@@ -1,5 +1,4 @@
 var React = require('react/dist/react.min');
-var FileInput = require('react-file-input');
 
 module.exports = React.createClass({
     propTypes: {
@@ -43,18 +42,7 @@ module.exports = React.createClass({
     /** シーンの描画 */
     render: function() {
         // ドラッグ＆ドロップのメッセージの有無
-        var mes = this.state.canDaD ? <div><h2>この欄に読み込みたい写真をドラッグ＆ドロップするか、下の[ファイル選択]から指定してください。</h2><br/><br/></div> : "";
-
-/*
-<div id='file-button-block'>
-    <FileInput name='file-photo'
-        accept='.jpg'
-        placeholder='写真'
-        className='inputClass'
-        onChange={this.handleSelectFile}
-        multiple='multiple' />
-</div>
-*/
+        var mes = this.state.canDaD ? <div><h2>この欄に読み込みたい写真をドラッグ＆ドロップするか、下のボタンから選択してください。</h2><br/><br/></div> : "";
 
         // 描画
         return(
