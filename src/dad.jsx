@@ -3,7 +3,8 @@ var React = require('react/dist/react.min');
 module.exports = React.createClass({
     propTypes: {
         appendPhotoData: React.PropTypes.func.isRequired,
-        readPhotos: React.PropTypes.func.isRequired
+        readPhotos: React.PropTypes.func.isRequired,
+        clearPhotos: React.PropTypes.func.isRequired
     },
     cancelEvent: function(event) {
         event.preventDefault();
@@ -58,6 +59,12 @@ module.exports = React.createClass({
                                 onChange={this.handleSelectFile}
                                 multiple />
                         </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <div className='btn btn-default' onClick={this.props.clearPhotos}>選択したファイルを削除
+                    </div>
+                    </td>
                     </tr>
                 </tbody>
             </table>

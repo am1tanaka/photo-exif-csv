@@ -58,6 +58,12 @@ var Top = React.createClass({
     nowIndex: 0,
     /* ファイルリスト*/
     files: [],
+    /** 選択してあったファイルを削除*/
+    handleClearFiles : function() {
+        this.nowIndex = 0;
+        this.files = [];
+        this.setState({photoDatas: []});
+    },
     /** 指定のデータをphotoDatasに追加*/
     appendPhotoData: function(data) {
         // 同じファイル名のものがあったら上書き
@@ -190,7 +196,11 @@ var Top = React.createClass({
         return (
             <div className='container'>
                 <Header ver={VERSION} />
-                <DaD appendPhotoData={this.appendPhotoData} readPhotos={this.readPhotos} />
+                <DaD
+                    appendPhotoData={this.appendPhotoData}
+                    readPhotos={this.readPhotos}
+                    clearPhotos={this.handleClearFiles}
+                    />
                 <ConfigMenu
                     linkStateFileName={this.linkState('exportFileName')}
                     linkStateLatLng={this.linkState('exportLatLng')}
