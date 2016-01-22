@@ -53,56 +53,65 @@ var Top = React.createClass({
                 outputType: "CSVmandara",
                 /** fileName:写真名 lat:緯度 lng:経度 date=撮影日 time=撮影時間*/
                 photoDatas: this.props.initDatas,     // 読み込んだ写真のデータ
-                /** 現在の読み込み中インデックス*/
-                nowIndex: 0,
-                /** ファイルのリスト*/
-                files: []
+                /** プログレスバーのインデックス*/
+                progressIndex: 0,
             };
     },
+    /** 現在の実際の読み込み中インデックス*/
+    nowIndex: 0,
+    /** 設定されたファイルリスト*/
+    files: [],
     /** 選択してあったファイルを削除*/
     handleClearFiles : function() {
+        this.nowIndex = 0;
+        this.files = [];
         this.setState({
-            nowIndex: 0,
-            files: [],
-            photoDatas: []});
+            photoDatas: [],
+            progressIndex: 0
+        });
     },
     /** 指定のデータをphotoDatasに追加*/
     appendPhotoData: function(data) {
         // 同じファイル名のものがあったら上書き
+        var newstate = {
+            progressIndex: this.nowIndex
+        };
         var photos = this.state.photoDatas;
         for (var i=0 ; i<photos.length ; i++) {
             if (photos[i].fileName == data.fileName) {
                 photos[i] = data;
-                this.setState({photoDatas: photos});
+                newstate.photoDatas = photos;
+                this.setState(newstate);
                 return;
             }
         }
         // 新しくデータを追加
-        var newdt = photos.concat([data]);
-        this.setState({photoDatas: newdt});
+        newstate.photoDatas = photos.concat([data]);
+        this.setState(newstate);
     },
     /** ファイルリストから写真を読み込む*/
     readPhotos: function(fls) {
         if (fls.length > 0) {
-            this.setState({
-                nowIndex: 0,
-                files: fls
-            });
             // 読み込み開始
+            this.nowIndex = 0;
+            this.files = fls;
             this.readExif();
+            this.setState({
+                progressIndex: 0
+            });
         }
     },
     /** ファイルを読み込みながら解析していく*/
     readExif: function() {
         // オーバーしていたら終了
-        if (this.state.nowIndex >= this.state.files.length) {
+        if (this.nowIndex >= this.files.length) {
             alert("読み込みを完了しました。");
             return;
         }
-        // 読み込み
-        this.reader.readAsDataURL(this.state.files[this.state.nowIndex]);
-        var newidx = this.state.nowIndex+1;
-        this.setState({nowIndex: newidx});
+        // 読み込み開始
+        this.reader.readAsDataURL(this.files[this.nowIndex]);
+        // 次に読み込むインデックスを更新
+        this.nowIndex++;
     },
     /** 緯度・経度を小数点表記に変換して返す*/
     convLatLng: function(dt) {
@@ -158,6 +167,7 @@ var Top = React.createClass({
         // リーダーの設定
         if (this.reader == null) {
             this.reader = new FileReader();
+            // 読み込み完了時の処理を登録
             this.reader.onloadend = function(e) {
                 try {
                     var exifObj = piexif.load(e.target.result);
@@ -173,7 +183,7 @@ var Top = React.createClass({
                 console.log(exifObj.Exif[piexif.ExifIFD.DateTimeOriginal]);
                 */
                 that.appendPhotoData({
-                    fileName: that.state.files[that.state.nowIndex-1].name,
+                    fileName: that.files[that.nowIndex-1].name,
                     lat: that.convLatLng(exifObj.GPS[piexif.GPSIFD.GPSLatitude]),
                     lng: that.convLatLng(exifObj.GPS[piexif.GPSIFD.GPSLongitude]),
                     alt: that.convAlt(exifObj.GPS[piexif.GPSIFD.GPSAltitude]),
@@ -196,6 +206,14 @@ var Top = React.createClass({
             };
         }
     },
+    /** 読み込み中フラグ。ファイル数より読み込み中インデックスが小さい時は読み込み中*/
+    checkLoading : function() {
+        return (this.state.progressIndex < this.files.length);
+    },
+    /** 読み込み完了フラグ。ファイル数と読み込み中インデックスが等しくて、ファイル数が0より大きい*/
+    checkLoaded: function() {
+        return ((this.state.progressIndex == this.files.length) && (this.files.length > 0));
+    },
     /** 描画*/
     render: function() {
         return (
@@ -203,16 +221,18 @@ var Top = React.createClass({
                 <Header ver={VERSION} />
                 <p>
                     このページから、写真や位置情報などを<ins>送信することはございません</ins>。
-                    <br />全ての処理をこのPC上で行います。
+                    <br />全ての処理は、このPC上で行われます。
                 </p>
                 <DaD
                     appendPhotoData={this.appendPhotoData}
                     readPhotos={this.readPhotos}
                     clearPhotos={this.handleClearFiles}
+                    isRemove={this.checkLoaded() ? true : false}
                     />
                 <ProgressBar
-                    nowIndex={this.state.nowIndex}
-                    fileCount={this.state.files.length}
+                    nowIndex={this.state.progressIndex}
+                    fileCount={this.files.length}
+                    visible={this.checkLoading() ? true : false}
                 />
                 <ConfigMenu
                     linkStateFileName={this.linkState('exportFileName')}
@@ -223,10 +243,10 @@ var Top = React.createClass({
                     handleChangeType={this.handleChangeType}
                     outputType={this.state.outputType}
                     handleExport={this.handleExportData}
-                    visible={this.state.photoDatas.length > 0}
+                    visible={this.checkLoaded() ? true : false}
                 />
                 <Table datas={this.state}
-                    visible={this.state.photoDatas.length > 0}
+                    visible={this.checkLoaded() ? true : false}
                     />
             </div>
         );
