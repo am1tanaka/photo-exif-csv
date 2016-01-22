@@ -201,6 +201,10 @@ var Top = React.createClass({
         return (
             <div className='container'>
                 <Header ver={VERSION} />
+                <p>
+                    このページから、写真や位置情報などを<ins>送信することはございません</ins>。
+                    <br />全ての処理をこのPC上で行います。
+                </p>
                 <DaD
                     appendPhotoData={this.appendPhotoData}
                     readPhotos={this.readPhotos}

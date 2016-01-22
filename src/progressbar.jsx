@@ -13,7 +13,6 @@ module.exports = React.createClass({
                     aria-valuenow='50'
                     aria-valuemin='0'
                     aria-valuemax='100'
-                    style="width: 10%;"
                     >プログレスバー
                 </div>
             </div>
