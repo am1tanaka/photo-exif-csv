@@ -2,6 +2,7 @@ var React = require('react/dist/react.min');
 var ReactDOM = require('react-dom/dist/react-dom.min');
 var Header = require('./header.jsx');
 var DaD = require('./dad.jsx');
+var ProgressBar = require('./progressbar.jsx');
 var ConfigMenu = require('./config-panel.jsx');
 var Table = require('./table.jsx');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
@@ -50,19 +51,20 @@ var Top = React.createClass({
                 exportTime: true,
                 // CSVsjis CSVutf8 GeoJSON
                 outputType: "CSVmandara",
-                /* fileName:写真名 lat:緯度 lng:経度 date=撮影日 time=撮影時間*/
-                photoDatas: this.props.initDatas,     // 読み込んんだ写真のデータ
+                /** fileName:写真名 lat:緯度 lng:経度 date=撮影日 time=撮影時間*/
+                photoDatas: this.props.initDatas,     // 読み込んだ写真のデータ
+                /** 現在の読み込み中インデックス*/
+                nowIndex: 0,
+                /** ファイルのリスト*/
+                files: []
             };
     },
-    /* 読み込み中インデックス*/
-    nowIndex: 0,
-    /* ファイルリスト*/
-    files: [],
     /** 選択してあったファイルを削除*/
     handleClearFiles : function() {
-        this.nowIndex = 0;
-        this.files = [];
-        this.setState({photoDatas: []});
+        this.setState({
+            nowIndex: 0,
+            files: [],
+            photoDatas: []});
     },
     /** 指定のデータをphotoDatasに追加*/
     appendPhotoData: function(data) {
@@ -76,14 +78,16 @@ var Top = React.createClass({
             }
         }
         // 新しくデータを追加
-        var newdt = this.state.photoDatas.concat([data]);
+        var newdt = photos.concat([data]);
         this.setState({photoDatas: newdt});
     },
     /** ファイルリストから写真を読み込む*/
     readPhotos: function(fls) {
         if (fls.length > 0) {
-            this.nowIndex = 0;
-            this.files = fls;
+            this.setState({
+                nowIndex: 0,
+                files: fls
+            });
             // 読み込み開始
             this.readExif();
         }
@@ -91,13 +95,14 @@ var Top = React.createClass({
     /** ファイルを読み込みながら解析していく*/
     readExif: function() {
         // オーバーしていたら終了
-        if (this.nowIndex >= this.files.length) {
+        if (this.state.nowIndex >= this.state.files.length) {
             alert("読み込みを完了しました。");
             return;
         }
         // 読み込み
-        this.reader.readAsDataURL(this.files[this.nowIndex]);
-        this.nowIndex++;
+        this.reader.readAsDataURL(this.state.files[this.state.nowIndex]);
+        var newidx = this.state.nowIndex+1;
+        this.setState({nowIndex: newidx});
     },
     /** 緯度・経度を小数点表記に変換して返す*/
     convLatLng: function(dt) {
@@ -168,7 +173,7 @@ var Top = React.createClass({
                 console.log(exifObj.Exif[piexif.ExifIFD.DateTimeOriginal]);
                 */
                 that.appendPhotoData({
-                    fileName: that.files[that.nowIndex-1].name,
+                    fileName: that.state.files[that.state.nowIndex-1].name,
                     lat: that.convLatLng(exifObj.GPS[piexif.GPSIFD.GPSLatitude]),
                     lng: that.convLatLng(exifObj.GPS[piexif.GPSIFD.GPSLongitude]),
                     alt: that.convAlt(exifObj.GPS[piexif.GPSIFD.GPSAltitude]),
@@ -201,6 +206,10 @@ var Top = React.createClass({
                     readPhotos={this.readPhotos}
                     clearPhotos={this.handleClearFiles}
                     />
+                <ProgressBar
+                    nowIndex={this.state.nowIndex}
+                    fileCount={this.state.files.length}
+                />
                 <ConfigMenu
                     linkStateFileName={this.linkState('exportFileName')}
                     linkStateLatLng={this.linkState('exportLatLng')}
