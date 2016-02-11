@@ -10,7 +10,7 @@ var LinkedStateMixin = require('react-addons-linked-state-mixin');
 var piexif = require('./libs/piexif.js');
 var convertData = require('./convert-csv-geojson.js');
 
-var VERSION = "Ver160122.1";
+var VERSION = "Ver160211.1";
 
 /**
  * 写真データから指定のデータを切り出すブラウザアプリトップ
@@ -132,6 +132,7 @@ var Top = React.createClass({
     /** 出力ボタンの処理*/
     handleExportData: function() {
         var csv = "";
+        var dlfile = "photodatas";
         var enc = "utf-8";
         var ext = "csv";
         switch(this.state.outputType) {
@@ -153,7 +154,7 @@ var Top = React.createClass({
         }
         // ダウンロード
         $('#btnDownload').attr({
-            download: "download."+ext,
+            download: dlfile+"."+ext,
             href: csv
         });
     },
