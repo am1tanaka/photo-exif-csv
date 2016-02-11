@@ -43,19 +43,17 @@ var Top = React.createClass({
     reader: null,
     /** 状態の定義*/
     getInitialState: function() {
-            return {
-                exportFileName: true,
-                exportLatLng: true,
-                exportAlt: true,
-                exportDate: true,
-                exportTime: true,
-                // CSVsjis CSVutf8 GeoJSON
-                outputType: "CSVmandara",
-                /** fileName:写真名 lat:緯度 lng:経度 date=撮影日 time=撮影時間*/
-                photoDatas: this.props.initDatas,     // 読み込んだ写真のデータ
-                /** プログレスバーのインデックス*/
-                progressIndex: 0,
-            };
+        return {
+            exportFileName: true,
+            exportLatLng: true,
+            exportAlt: true,
+            exportDate: true,
+            exportTime: true,
+            // CSVsjis CSVutf8 GeoJSON
+            outputType: "CSVmandara",
+            /** fileName:写真名 lat:緯度 lng:経度 date=撮影日 time=撮影時間*/
+            photoDatas: this.props.initDatas    // 読み込んだ写真のデータ
+        };
     },
     /** 現在の実際の読み込み中インデックス*/
     nowIndex: 0,
@@ -66,16 +64,13 @@ var Top = React.createClass({
         this.nowIndex = 0;
         this.files = [];
         this.setState({
-            photoDatas: [],
-            progressIndex: 0
+            photoDatas: []
         });
     },
     /** 指定のデータをphotoDatasに追加*/
     appendPhotoData: function(data) {
         // 同じファイル名のものがあったら上書き
-        var newstate = {
-            progressIndex: this.nowIndex
-        };
+        var newstate = {};
         var photos = this.state.photoDatas;
         for (var i=0 ; i<photos.length ; i++) {
             if (photos[i].fileName == data.fileName) {
@@ -96,9 +91,6 @@ var Top = React.createClass({
             this.nowIndex = 0;
             this.files = fls;
             this.readExif();
-            this.setState({
-                progressIndex: 0
-            });
         }
     },
     /** ファイルを読み込みながら解析していく*/
@@ -112,6 +104,7 @@ var Top = React.createClass({
         this.reader.readAsDataURL(this.files[this.nowIndex]);
         // 次に読み込むインデックスを更新
         this.nowIndex++;
+        ProgressBar.updateProgressBar(this.nowIndex, this.files.length);
     },
     /** 緯度・経度を小数点表記に変換して返す*/
     convLatLng: function(dt) {
@@ -209,11 +202,11 @@ var Top = React.createClass({
     },
     /** 読み込み中フラグ。ファイル数より読み込み中インデックスが小さい時は読み込み中*/
     checkLoading : function() {
-        return (this.state.progressIndex < this.files.length);
+        return (this.nowIndex < this.files.length);
     },
     /** 読み込み完了フラグ。ファイル数と読み込み中インデックスが等しくて、ファイル数が0より大きい*/
     checkLoaded: function() {
-        return ((this.state.progressIndex == this.files.length) && (this.files.length > 0));
+        return ((this.nowIndex == this.files.length) && (this.files.length > 0));
     },
     /** 描画*/
     render: function() {
@@ -230,8 +223,8 @@ var Top = React.createClass({
                     clearPhotos={this.handleClearFiles}
                     isRemove={this.checkLoaded() ? true : false}
                     />
-                <ProgressBar
-                    nowIndex={this.state.progressIndex}
+                <ProgressBar.Component
+                    nowIndex={this.nowIndex}
                     fileCount={this.files.length}
                     visible={this.checkLoading() ? true : false}
                 />
