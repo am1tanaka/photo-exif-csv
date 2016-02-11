@@ -10,7 +10,7 @@ var LinkedStateMixin = require('react-addons-linked-state-mixin');
 var piexif = require('./libs/piexif.js');
 var convertData = require('./convert-csv-geojson.js');
 
-var VERSION = "Ver160211.1";
+var VERSION = "Ver160211.2";
 
 /**
  * 写真データから指定のデータを切り出すブラウザアプリトップ
@@ -104,7 +104,6 @@ var Top = React.createClass({
         this.reader.readAsDataURL(this.files[this.nowIndex]);
         // 次に読み込むインデックスを更新
         this.nowIndex++;
-        ProgressBar.updateProgressBar(this.nowIndex, this.files.length);
     },
     /** 緯度・経度を小数点表記に変換して返す*/
     convLatLng: function(dt) {
@@ -223,7 +222,7 @@ var Top = React.createClass({
                     clearPhotos={this.handleClearFiles}
                     isRemove={this.checkLoaded() ? true : false}
                     />
-                <ProgressBar.Component
+                <ProgressBar
                     nowIndex={this.nowIndex}
                     fileCount={this.files.length}
                     visible={this.checkLoading() ? true : false}
