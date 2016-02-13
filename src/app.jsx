@@ -10,7 +10,7 @@ var LinkedStateMixin = require('react-addons-linked-state-mixin');
 var piexif = require('./libs/piexif.js');
 var convertData = require('./convert-csv-geojson.js');
 
-var VERSION = "Ver160211.2";
+var VERSION = "Ver160213.1";
 
 /**
  * 写真データから指定のデータを切り出すブラウザアプリトップ
@@ -123,32 +123,41 @@ var Top = React.createClass({
     },
     /** 出力ボタンの処理*/
     handleExportData: function() {
-        var csv = "";
+        var blob = "";
         var dlfile = "photodatas";
         var enc = "utf-8";
         var ext = "csv";
+        var objurl;
         switch(this.state.outputType) {
             case "CSVmandara":
-            csv = convertData.exportCSV(this.state, "MANDARA");
+            blob = convertData.exportCSV(this.state, "MANDARA");
             enc = "shift_jis";
             break;
             case "CSVsjis":
-            csv = convertData.exportCSV(this.state, "SJIS");
+            blob = convertData.exportCSV(this.state, "SJIS");
             enc = "shift_jis";
             break;
             case "CSVutf8":
-            csv = convertData.exportCSV(this.state, "UTF8");
+            blob = convertData.exportCSV(this.state, "UTF8");
             break;
             case "GeoJSON":
-            csv = convertData.exportGeoJSON(this.state);
+            blob = convertData.exportGeoJSON(this.state);
             ext = "geojson";
             break;
         }
         // ダウンロード
-        $('#btnDownload').attr({
-            download: dlfile+"."+ext,
-            href: csv
-        });
+        //// IE
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveOrOpenBlob(blob, dlfile+"."+ext);
+        }
+        else {
+            //// FirefoxやChrome
+            objurl = (window.URL || window.webkitURL).createObjectURL(blob);
+            $('#btnDownload').attr({
+                download: dlfile+"."+ext,
+                href: objurl
+            });
+        }
     },
     /** 出力形式のラジオボタンの変更*/
     handleChangeType: function(e) {
