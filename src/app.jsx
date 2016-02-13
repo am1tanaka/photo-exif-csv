@@ -9,8 +9,9 @@ var LinkedStateMixin = require('react-addons-linked-state-mixin');
 // hMatoba/piexifjs https://github.com/hMatoba/piexifjs
 var piexif = require('./libs/piexif.js');
 var convertData = require('./convert-csv-geojson.js');
+var SafariHelp = require('./safari-help.jsx');
 
-var VERSION = "Ver160213.1";
+var VERSION = "Ver160213.2";
 
 /**
  * 写真データから指定のデータを切り出すブラウザアプリトップ
@@ -225,6 +226,7 @@ var Top = React.createClass({
                     このページから、写真や位置情報などを<ins>送信することはございません</ins>。
                     <br />全ての処理は、このPC上で行われます。
                 </p>
+                <SafariHelp />
                 <DaD
                     appendPhotoData={this.appendPhotoData}
                     readPhotos={this.readPhotos}

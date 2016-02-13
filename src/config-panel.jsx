@@ -1,5 +1,6 @@
 var React = require('react/dist/react.min');
 
+/** 設定コンポーネント*/
 module.exports = React.createClass({
     /* props定義*/
     propTypes: {
