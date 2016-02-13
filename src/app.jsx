@@ -10,8 +10,10 @@ var LinkedStateMixin = require('react-addons-linked-state-mixin');
 var piexif = require('./libs/piexif.js');
 var convertData = require('./convert-csv-geojson.js');
 var SafariHelp = require('./safari-help.jsx');
+//var ES6Test = require('./es6test.jsx');
+import ES6Test from './es6test.jsx'
 
-var VERSION = "Ver160213.2";
+var VERSION = "Ver160213.3";
 
 /**
  * 写真データから指定のデータを切り出すブラウザアプリトップ
@@ -221,6 +223,7 @@ var Top = React.createClass({
     render: function() {
         return (
             <div className='container'>
+                <ES6Test />
                 <Header ver={VERSION} />
                 <p>
                     このページから、写真や位置情報などを<ins>送信することはございません</ins>。
