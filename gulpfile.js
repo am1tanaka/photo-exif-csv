@@ -66,13 +66,13 @@ function jscompile( is_watch ) {
 
         return bundler
             //.once('data', transTimer.start)
-            .transform(babelify, {presets:["react"]})
+            .transform(babelify, {presets:["es2015", "react"]})
             //.pipe(transTimer)
             .once('data', bundleTimer.start)
             .bundle()
+            .on('error', $.util.log.bind($.util, 'Browserify Error'))
             .pipe(bundleTimer)
             .once('data', outputTimer.start)
-            .on('error', $.util.log.bind($.util, 'Browserify Error'))
             .pipe( source('app.js') )
             .pipe($.debug())
             /*
